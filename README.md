@@ -42,3 +42,11 @@ return render (request.'search.html',context)
 
 ```
 what we are do in this function is we are make query agains the parameter that user input in query variable.query variable get the value that user type and with the help of query we will able to search data from post model.in post_title__icontains i use double underscore whwer title is title field in model.
+
+
+## Improvement for search bar code in django for better user experince.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+1.if user enter too many long string or somthing that are not match with database recored in our title field then it will through something like this.
+
+
+
