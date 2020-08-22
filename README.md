@@ -48,5 +48,58 @@ what we are do in this function is we are make query agains the parameter that u
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 1.if user enter too many long string or somthing that are not match with database recored in our title field then it will through something like this.
 
+![Screenshot (244)](https://user-images.githubusercontent.com/51478832/90954029-69382e80-e48e-11ea-83f5-9813a1697185.png)
+
+for adding this functality we use following steps.
+step1: go inside search function in your views abd make code like this:
+```
+ query = request.GET['query']
+    if len(query) >100:   # check length of query
+        posts = Post.objects.none()  #if the length is greater than 100 then assign none object to query variable as show in  the above result that in image. 
+        
+    poststitle=Post.objects.filter(post_title__icontains=query)
+     if posts.count()==0: #if query is qual to 0 then print below message 
+        messages.error(request,"No Search Results Found . Please Refine Your Query.")
+    return render(request,'search.html',{"posts":posts,"query":query})
+```
+
+step2: Add litle bit of code inside your search template for showing the error and you good to go .
+```
+ {% if messages %}
+    {% for msg in messages%}
+    {{msg}}
+    {% endfor %}
+    {% endif %}
+    {% if posts|length == 0%}
+    <div class="container">
+    <p>Your search -</p><code><b>{{query}}...</b></code><br/><p>- did not match any documents</p><br/>
+    Suggestions:
+    <ul>
+    <li>Make sure that all words are spelled correctly.</li>
+    <li>Try different keywords.</li>
+    <li>Try more general keywords.</li>
+    </ul>
+    </div>
+    {% endif %}
+
+```
+## Search record with merge multiple query set.
+if we need to search data from title and content and other mode field then we  need to merge multiple coloum of model with union function like this :
+```
+def serch(request):
+    query = request.GET['query']
+    if len(query) >100:
+        posts = Post.objects.none()
+        
+    poststitle=Post.objects.filter(post_title__icontains=query)
+    postcontent=Post.objects.filter(post_desc__icontains=query)
+    posts = poststitle.union(postcontent)
+    if posts.count()==0:
+        messages.error(request,"No Search Results Found . Please Refine Your Query.")
+    return render(request,'search.html',{"posts":posts,"query":query})
+    
+
+```
+
 
 
